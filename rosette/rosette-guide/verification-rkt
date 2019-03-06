@@ -1,0 +1,33 @@
+#lang rosette/safe
+
+; Section 2.1: Symbolic Values
+(define-symbolic b boolean?)
+
+(define (static)
+  (define-symbolic x boolean?) ; creates the same constant when evaluated
+  x)
+; (eq? (static) (static)) ; #t
+
+(define (dynamic)
+  (define-symbolic* y integer?) ; creates a different constant when evaluated
+  y)
+; (eq? (dynamic) (dynamic)) ; (= y$0 y$1)
+
+; Section 2.2: Assertions
+
+; Section 2.3: Solver-Aided Queries
+; (define (poly x)
+;  (+ (* x x x x) (* 5 x x x) (* 8 x x) (* 4 x)))
+(define (poly x)
+ (+ (* x x x x) (* 6 x x x) (* 11 x x) (* 6 x)))
+(define (factored x)
+  (* x (+ x 1) (+ x 2) (+ x 2)))
+(define (same p f x)
+  (assert (= (p x) (f x))))
+
+; (same poly factored 100)
+
+; Section 2.3.1: Verification
+(define-symbolic i integer?)
+(define cex (verify (same poly factored i)))
+
